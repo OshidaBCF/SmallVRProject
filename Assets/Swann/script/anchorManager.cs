@@ -54,9 +54,13 @@ public class anchorManager : MonoBehaviour
         Debug.Log(distance);
         if (distance < 1)
         {
+            Quaternion rotator = Quaternion.FromToRotation(closestReleased.transform.forward, -closestToAttachTo.transform.forward);
+
+            releasedGameObject.transform.rotation = rotator;
+
             Vector3 movement = closestToAttachTo.transform.position - closestReleased.transform.position;
             releasedGameObject.transform.position += movement;
-            Debug.Log(movement);
+            Debug.Log(rotator);
 
 
             /*
@@ -66,5 +70,9 @@ public class anchorManager : MonoBehaviour
             freeAttachPoints.Remove(closestToAttachTo);
             */
         }
+        /*
+        float tempY = releasedGameObject.transform.rotation.eulerAngles.y;
+
+        releasedGameObject.transform.rotation = Quaternion.Euler(0, tempY, 0); */
     }
 }
