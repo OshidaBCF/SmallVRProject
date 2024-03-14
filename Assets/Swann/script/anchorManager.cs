@@ -27,37 +27,44 @@ public class anchorManager : MonoBehaviour
         float distance = Mathf.Infinity;
         foreach (Transform attachPoint in attachPoints.transform)
         {
-            Vector3 AP_Pos = attachPoint.position;
-            
-            if (freeAttachPoints.Count > 0)
+            if (attachPoint.gameObject.activeSelf)
             {
-                foreach (GameObject freeAttachPoint in freeAttachPoints)
+                Vector3 AP_Pos = attachPoint.position;
+
+                if (freeAttachPoints.Count > 0)
                 {
-                    if (!freeAttachPoint.transform.IsChildOf(attachPoints.transform))
+                    foreach (GameObject freeAttachPoint in freeAttachPoints)
                     {
-                        if (Vector3.Distance(AP_Pos, freeAttachPoint.transform.position) < distance)
+                        if (!freeAttachPoint.transform.IsChildOf(attachPoints.transform))
                         {
-                            distance = Vector3.Distance(AP_Pos, freeAttachPoint.transform.position);
-                            closestReleased = attachPoint.gameObject;
-                            closestToAttachTo = freeAttachPoint;
+                            if (Vector3.Distance(AP_Pos, freeAttachPoint.transform.position) < distance)
+                            {
+                                distance = Vector3.Distance(AP_Pos, freeAttachPoint.transform.position);
+                                closestReleased = attachPoint.gameObject;
+                                closestToAttachTo = freeAttachPoint;
+                            }
                         }
                     }
                 }
+                if (!freeAttachPoints.Contains(attachPoint.gameObject))
+                    freeAttachPoints.Add(attachPoint.gameObject);
             }
-            if (!freeAttachPoints.Contains(attachPoint.gameObject))
-                freeAttachPoints.Add(attachPoint.gameObject);
         }
-        if (distance < 0.2)
+
+        Debug.Log(distance);
+        if (distance < 1)
         {
             Vector3 movement = closestToAttachTo.transform.position - closestReleased.transform.position;
             releasedGameObject.transform.position += movement;
-            Vector3 rotationVector = new Vector3(0, releasedGameObject.transform.rotation.y, 0);
-            Debug.Log(Quaternion.Euler(rotationVector));
-            releasedGameObject.transform.rotation = Quaternion.Euler(rotationVector);
+            Debug.Log(movement);
+
+
+            /*
             closestReleased.SetActive(false);
             closestToAttachTo.SetActive(false);
             freeAttachPoints.Remove(closestReleased);
             freeAttachPoints.Remove(closestToAttachTo);
+            */
         }
     }
 }
